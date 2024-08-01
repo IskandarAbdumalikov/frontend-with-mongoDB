@@ -1,15 +1,62 @@
+import Joi from "joi";
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-  fname: String,
-  lname: String,
-  username: String,
-  password: String,
-  age: Number,
-  url: String,
-  gender: String,
-  isActive: Boolean,
-  budget: Number,
+  fname: {
+    type: String,
+    required: true,
+  },
+  lname: {
+    type: String,
+    required: false,
+    default: "",
+  },
+  username: {
+    type: String,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  age: {
+    type: Number,
+    required: false,
+    default: 0,
+  },
+  url: {
+    type: String,
+    required: false,
+    default: "",
+  },
+  gender: {
+    type: String,
+    required: true,
+  },
+  isActive: {
+    type: Boolean,
+    required: false,
+    default: true,
+  },
+  budget: {
+    type: Number,
+    required: true,
+  },
 });
 
 export const Users = mongoose.model("user", userSchema);
+
+export const validationUser = (body) => {
+  const schema = Joi.object({
+    fname: Joi.string().required(),
+    lname: Joi.string().allow(""),
+    username: Joi.string().required(),
+    password: Joi.string().required(),
+    age: Joi.number().allow(0),
+    url: Joi.string().allow(""),
+    gender: Joi.string().required(),
+    isActive: Joi.boolean().allow(true),
+    budget: Joi.number().required(),
+  });
+  return schema.validate(body);
+};
